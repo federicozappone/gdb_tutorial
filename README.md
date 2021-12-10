@@ -97,7 +97,7 @@ So already we can see the that the program was at line 28 of main.cc, that `this
 (gdb) backtrace
 #0  Node<int>::next (this=0x0) at main.cc:28
 #1  0x2a16c in LinkedList<int>::remove (this=0x40160, 
-    [\[email protected\]](/cdn-cgi/l/email-protection)) at main.cc:77
+    item_to_remove=@0xffbef014) at main.cc:77
 #2  0x1ad10 in main (argc=1, argv=0xffbef0a4) at main.cc:111
 (gdb)
 ```
@@ -127,7 +127,7 @@ Breakpoint 1 at 0x29fa0: file main.cc, line 52.
 So now Breakpoint 1 is set at main.cc, line 52 as desired. (The reason the breakpoint gets a number is so we can refer to the breakpoint later, for example if we want to delete it.) So when the program is run, it will return control to the debugger everytime it reaches line 52. This may not be desirable if the method is called many times but only has problems with certain values that are passed. Conditional breakpoints can help us here. For our example, we know that the program crashes when `LinkedList<int>::remove()` is called with a value of 1. So we might want to tell the debugger to only break at line 52 if `item_to_remove` is equal to 1. This can be done by issuing the following command:
 
 ```
-(gdb) condition 1 item\_to\_remove==1
+(gdb) condition 1 item_to_remove==1
 (gdb)
 ```
 
@@ -163,19 +163,19 @@ Destroying Node, 4 are in existence right now
 
 
 Breakpoint 1, LinkedList<int>::remove (this=0x40160, 
-    [\[email protected\]](/cdn-cgi/l/email-protection)) at main.cc:52
-52	    Node<T> \*marker = head\_;
+    item_to_remove=@0xffbef014) at main.cc:52
+52	    Node<T> *marker = head_;
 (gdb) step
-53	    Node<T> \*temp = 0;  // temp points to one behind as we iterate
+53	    Node<T> *temp = 0;  // temp points to one behind as we iterate
 (gdb) 
 55	    while (marker != 0) {
 (gdb) 
-56	      if (marker->value() == item\_to\_remove) {
+56	      if (marker->value() == item_to_remove) {
 (gdb) 
 Node<int>::value (this=0x401b0) at main.cc:30
-30	  const T& value () const { return value\_; }
+30	  const T& value () const { return value_; }
 (gdb) 
-LinkedList<int>::remove (this=0x40160, [\[email protected\]](/cdn-cgi/l/email-protection))
+LinkedList<int>::remove (this=0x40160, item_to_remove=@0xffbef014)
     at main.cc:75
 75	      marker = 0;  // reset the marker
 (gdb) 
@@ -184,12 +184,12 @@ LinkedList<int>::remove (this=0x40160, [\[email protected\]](/cdn-cgi/l/email-p
 77	      marker = marker->next();
 (gdb) 
 Node<int>::next (this=0x0) at main.cc:28
-28	  Node<T>\* next () const { return next\_; }
+28	  Node<T>* next () const { return next_; }
 (gdb) 
 
 Program received signal SIGSEGV, Segmentation fault.
 Node<int>::next (this=0x0) at main.cc:28
-28	  Node<T>\* next () const { return next\_; }
+28	  Node<T>* next () const { return next_; }
 (gdb)
 ```
 
